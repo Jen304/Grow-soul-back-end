@@ -16,7 +16,8 @@ class EmotionSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        ret["created_at"] = datetime.timestamp(instance.created_at)
+        ret["created_at"] = datetime.strftime(
+            instance.created_at, '%Y-%m-%dT%H:%M:%S')
         return ret
     # validate created_at
 
