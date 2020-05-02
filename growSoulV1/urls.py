@@ -1,5 +1,10 @@
-from django.urls import include, re_path
+from django.urls import include, path
+from django.contrib import admin
 
 urlpatterns = [
-    re_path(r'^', include('emotion.urls')),
+    path('admin/', admin.site.urls),
+]
+# add the urls to emotion application
+urlpatterns += [
+    path('v1/', include('emotion.urls')),
 ]

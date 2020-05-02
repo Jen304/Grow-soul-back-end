@@ -1,10 +1,14 @@
 from django.db import models
-from datetime import datetime
+from django_unixdatetimefield import UnixDateTimeField
+from django.utils.timezone import now
 
 # Create your models here.
 
 
 class Emotion(models.Model):
-    emotion = models.CharField(max_length=50)
-    created_at = models.DateTimeField(default=datetime.now)
-    story = models.TextField()
+    value = models.IntegerField()
+    created_at = UnixDateTimeField(default=now)
+    story = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']

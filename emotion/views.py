@@ -1,14 +1,31 @@
-from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from datetime import datetime
+from django.utils import timezone
 
 
 from .models import Emotion
-from .serializers import EmotionSerializer
+from .serializers import EmotionSerializer, EmotionUpdateSerialiser
 
 
-class EmotionList(APIView):
-    def get(self, request):
-        emotion = Emotion.objects.all()[:10]
-        data = EmotionSerializer(emotion, many=True).data
-        return Response(data)
+class EmotionList(generics.ListCreateAPIView):
+    queryset = Emotion.objects.all()
+    serializer_class = EmotionSerializer
+
+
+class EmotionDetail(generics.RetrieveUpdateAPIView):
+    queryset = Emotion.objects.all()
+    serializer_class = EmotionUpdateSerialiser
+
+
+class EmotionTimeRange(generics.ListAPIView):
+    serializer_class = EmotionSerializer
+
+    def get_queryset(self):
+        start_time = self.kwargs['start']
+        start_time = timezone.strptime(
+            self.kwargs['start'], '%Y-%m-%dT%H:%M:%S')
+        end_time = timezone.strptime(
+            self.kwargs['end'], '%Y-%m-%dT%H:%M:%S')
+        print(start_time)
+        return Emotion.objects.all()
