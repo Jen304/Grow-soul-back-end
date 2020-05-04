@@ -10,7 +10,7 @@ from .serializers import EmotionSerializer, EmotionUpdateSerialiser
 
 
 class EmotionList(generics.ListCreateAPIView):
-    queryset = Emotion.objects.all()
+    queryset = Emotion.objects.all()[:5]
     serializer_class = EmotionSerializer
 
 
@@ -24,11 +24,15 @@ class EmotionTimeRange(generics.ListAPIView):
 
     def get_queryset(self):
         try:
+            '''
             start_time = self.kwargs['start']
             start_time = datetime.strptime(
-                self.kwargs['start'], '%Y-%m-%dT%H:%M:%S')
+                self.kwargs['start'], '%Y-%m-%dT%H:%M:%S-%z')
             end_time = datetime.strptime(
-                self.kwargs['end'], '%Y-%m-%dT%H:%M:%S')
+                self.kwargs['end'], '%Y-%m-%dT%H:%M:%S-%z')
+            '''
+            start_time = datetime.fromisoformat(self.kwargs['start'])
+            end_time = datetime.fromisoformat(self.kwargs['end'])
             print(start_time)
             print(end_time)
             if(start_time > end_time):
