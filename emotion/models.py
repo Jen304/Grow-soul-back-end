@@ -9,7 +9,9 @@ from .managers import CustomUserManager
 
 
 class User(AbstractUser):
-    name = models.CharField(blank=True, null=True, max_length=255)
+    # overwrite default username
+    username = models.CharField(blank=True, null=True,
+                                max_length=255, unique=False)
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = 'email'
@@ -23,7 +25,7 @@ class User(AbstractUser):
 
 class Emotion(models.Model):
     value = models.IntegerField()
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=now)
     story = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         User, related_name='user', on_delete=models.CASCADE)

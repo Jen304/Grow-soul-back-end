@@ -3,20 +3,43 @@ from rest_framework.response import Response
 from datetime import datetime
 from django.utils import timezone
 from django.http import Http404, HttpResponseNotFound
+from rest_framework.exceptions import PermissionDenied
+from rest_framework import permissions
 
 
 from .models import Emotion
-from .serializers import EmotionSerializer, EmotionUpdateSerialiser
+from .serializers import EmotionSerializer, EmotionUpdateSerialiser, UserSerializer
+
+
+class CreateUser(generics.CreateAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = UserSerializer
 
 
 class EmotionList(generics.ListCreateAPIView):
-    queryset = Emotion.objects.all()[:5]
+    model = Emotion
     serializer_class = EmotionSerializer
+
+    def get_queryset(self):
+        return Emotion.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class EmotionDetail(generics.RetrieveUpdateAPIView):
-    queryset = Emotion.objects.all()
+
+    def get_queryset(self):
+        return Emotion.objects.filter(user=self.request.user)
+
     serializer_class = EmotionUpdateSerialiser
+
+    def put(self, request, *args, **kwargs):
+        # check the correct user
+        emotion = Emotion.objects.get(pk=self.kwargs["pk"])
+        if not request.user == emotion.user:
+            raise PermissionDenied("It's not your emotion.")
+        return super().put(request, *args, **kwargs)
 
 
 class EmotionTimeRange(generics.ListAPIView):
@@ -38,7 +61,7 @@ class EmotionTimeRange(generics.ListAPIView):
             if(start_time > end_time):
                 raise Http404(
                     'start date must be less then end date')
-            return Emotion.objects.filter(created_at__range=[start_time, end_time])
+            return Emotion.objects.filter(created_at__range=[start_time, end_time], user=self.request.user)
         except:
             raise Http404(
-                'date should be in correct format (%Y-%m-%dT%H:%M:%S)')
+                'date should be in iso correct format')

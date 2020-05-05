@@ -1,11 +1,13 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.hashers import make_password
 
 
 class CustomUserManager(BaseUserManager):
+    use_in_migrations = True
     """
     Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
+    for authentication instead of username.
     """
 
     def create_user(self, email, password, **extra_fields):

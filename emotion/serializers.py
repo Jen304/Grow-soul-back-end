@@ -1,13 +1,36 @@
 from rest_framework import serializers
-from .models import Emotion
+from .models import Emotion, User
 from datetime import datetime
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
+
+
+class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(min_length=8, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        print(validated_data)
+        return User.objects.create_user(**validated_data)
+
+
+'''
+    # hash the password before store in the database
+    def validate_password(self, value: str) -> str:
+
+        return make_password(value)
+'''
 
 
 class EmotionSerializer(serializers.ModelSerializer):
     # created_at is optional field
     created_at = serializers.DateTimeField(
-        required=False, default=datetime.now)
+        required=False, default=timezone.now)
 
     class Meta:
         model = Emotion
