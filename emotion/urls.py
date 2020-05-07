@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import EmotionList, EmotionDetail, EmotionTimeRange, CreateUser
+from .views import EmotionList, EmotionDetail, EmotionTimeRange, CreateUser, Logout
 from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
@@ -11,8 +11,9 @@ urlpatterns = [
 ]
 # add auth url to emotion application
 urlpatterns += [
-    path('user/create', CreateUser.as_view(), name="create_user"),
+    path('user/create/', CreateUser.as_view(), name="create_user"),
     path('auth/login/', jwt_views.TokenObtainPairView.as_view(),
          name='login'),  # override jwt stock token
     path('auth/refresh/', jwt_views.TokenRefreshView.as_view(), name='refresh_token'),
+    path('auth/logout/', Logout.as_view(), name="logout")
 ]

@@ -5,6 +5,9 @@ from django.utils import timezone
 from django.http import Http404, HttpResponseNotFound
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
 
 
 from .models import Emotion
@@ -65,3 +68,14 @@ class EmotionTimeRange(generics.ListAPIView):
         except:
             raise Http404(
                 'date should be in iso correct format')
+
+
+class Logout(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        outdated_token = request.data.get('token')
+        print(outdated_token)
+        token = RefreshToken(outdated_token)
+        token.blacklist()
+        return Response(status=status.HTTP_202_ACCEPTED)

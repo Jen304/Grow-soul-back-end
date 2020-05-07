@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'emotion',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -55,12 +56,31 @@ MIDDLEWARE = [
 ]
 # need to change to false in the future (production)
 CORS_ORIGIN_ALLOW_ALL = True
-'''
-* need to specify in the production
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
+    'http://localhost:3000'
 )
-'''
+CORS_ALLOW_METHODS = [
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Authorization'
+
+]
 ROOT_URLCONF = 'growSoulV1.urls'
 
 TEMPLATES = [
