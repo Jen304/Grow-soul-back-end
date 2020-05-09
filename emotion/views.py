@@ -71,11 +71,11 @@ class EmotionTimeRange(generics.ListAPIView):
 
 
 class Logout(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = ()
 
     def post(self, request):
         outdated_token = request.data.get('token')
-        print(outdated_token)
+        # print(outdated_token)
         token = RefreshToken(outdated_token)
         token.blacklist()
         return Response(status=status.HTTP_202_ACCEPTED)
