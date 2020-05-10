@@ -8,6 +8,7 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
+from rest_framework_simplejwt import views as jwt_views
 
 
 from .models import Emotion
@@ -79,3 +80,11 @@ class Logout(APIView):
         token = RefreshToken(outdated_token)
         token.blacklist()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class CustomObtainToken(jwt_views.TokenObtainPairView):
+    permission_classes = ()
+
+
+class CustomRefreshToken(jwt_views.TokenRefreshView):
+    permission_classes = ()
