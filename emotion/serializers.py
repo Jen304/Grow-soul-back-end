@@ -3,6 +3,7 @@ from .models import Emotion, User
 from datetime import datetime
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -11,11 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('email', 'password', )
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        print(validated_data)
+        # print(validated_data)
         return User.objects.create_user(**validated_data)
 
 

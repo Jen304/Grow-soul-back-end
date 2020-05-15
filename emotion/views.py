@@ -9,15 +9,37 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from rest_framework_simplejwt import views as jwt_views
 
 
-from .models import Emotion
+from .models import Emotion, User
 from .serializers import EmotionSerializer, EmotionUpdateSerialiser, UserSerializer
+import json
 
 
 class CreateUser(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = self.create(request, *args, **kwargs)
+        # print(user['email'])
+        #userDic = JSONParser.parse(userInfo)
+        # print(str(userInfo.data['email']))
+
+        #userDic = json.loads(str(userInfo.data))
+        # print(userDic)
+
+        user = User.objects.get(email=response.data['email'])
+        refresh = RefreshToken.for_user(user)
+        token = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+        response.data = token
+        return response
 
 
 class EmotionList(generics.ListCreateAPIView):
@@ -80,11 +102,3 @@ class Logout(APIView):
         token = RefreshToken(outdated_token)
         token.blacklist()
         return Response(status=status.HTTP_202_ACCEPTED)
-
-
-class CustomObtainToken(jwt_views.TokenObtainPairView):
-    permission_classes = ()
-
-
-class CustomRefreshToken(jwt_views.TokenRefreshView):
-    permission_classes = ()
