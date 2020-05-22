@@ -8,15 +8,10 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
-from rest_framework_simplejwt import views as jwt_views
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from rest_framework_simplejwt import views as jwt_views
 
 
 from .models import Emotion, User
 from .serializers import EmotionSerializer, EmotionUpdateSerialiser, UserSerializer
-import json
 
 
 class CreateUser(generics.CreateAPIView):
@@ -25,12 +20,6 @@ class CreateUser(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         response = self.create(request, *args, **kwargs)
-        # print(user['email'])
-        #userDic = JSONParser.parse(userInfo)
-        # print(str(userInfo.data['email']))
-
-        #userDic = json.loads(str(userInfo.data))
-        # print(userDic)
 
         user = User.objects.get(email=response.data['email'])
         refresh = RefreshToken.for_user(user)

@@ -3,7 +3,6 @@ from .models import Emotion, User
 from datetime import datetime
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
