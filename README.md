@@ -1,6 +1,6 @@
 # Grow your soul
 
-> This is the back end of grow your soul project
+> This is the back end of Grow Your Soul project
 
 ## Features
 * Authentication user with JWT token
